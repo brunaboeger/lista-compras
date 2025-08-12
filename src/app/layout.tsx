@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { winky } from "./fonts";
+import { geist } from "./fonts";
+import Header from "@/components/Header";
 
 export const metadata: Metadata = {
   title: "Mercado",
@@ -14,7 +15,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR">
-      <body className={`${winky.className}`}>
+      <body className={`${geist.className}`}>
+        <Header />
         {children}
       </body>
     </html>

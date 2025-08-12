@@ -1,7 +1,7 @@
-import { Winky_Sans } from "next/font/google";
+import { Geist } from "next/font/google";
 
-export const winky = Winky_Sans({
+export const geist = Geist({
   subsets: ["latin"],
-  weight: ["400", "600", "700"],
-  style: ["normal", "italic"],
+  weight: ["300", "400", "500", "600", "700"],
+  style: ["normal"],
 });

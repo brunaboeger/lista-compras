@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { geist } from "./fonts";
-import Header from "@/components/Header";
-import Toolbar from "@/components/Toolbar";
 import { Toaster } from "@/components/ui/sonner";
+import Header from "@/components/Header";
 
 export const metadata: Metadata = {
   title: "Mercado",
@@ -21,7 +20,6 @@ export default function RootLayout({
         <Toaster position="top-center" richColors />
         <Header />
         {children}
-        <Toolbar />
       </body>
     </html>
   );

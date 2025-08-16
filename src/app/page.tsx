@@ -1,9 +1,10 @@
 "use client";
 
-import { SoapDispenserDropletIcon } from "lucide-react";
+import { SoapDispenserDropletIcon, PlusIcon } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import EmptyState from "@/components/EmptyState";
+import Link from "next/link";
 
 export default function Home() {
   const [bagItems, setBagItems] = useState<string[]>([]);
@@ -74,7 +75,15 @@ export default function Home() {
 
       {/* Disponíveis */}
       <section className="flex flex-col gap-4 p-5 bg-white rounded-2xl border">
-        <h2 className="text-2xl font-extrabold">Disponíveis</h2>
+        <div className="flex items-center justify-between">
+          <h2 className="text-2xl font-extrabold">Disponíveis</h2>
+          <Button asChild>
+            <Link href="/itens">
+              <PlusIcon />
+              Novo item
+            </Link>
+          </Button>
+        </div>
         {availableItems.length > 0 ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-8 gap-3">
             {availableItems.map((name, index) => (

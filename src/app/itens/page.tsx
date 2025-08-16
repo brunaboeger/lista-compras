@@ -48,7 +48,7 @@ const ItemsPage = () => {
 
   return (
     <div className="p-5">
-      <div className="p-5 bg-white rounded-2xl border">
+      <section className="p-5 bg-white rounded-2xl border max-w-[1040px] mx-auto">
         <h1 className="text-2xl font-bold mb-5">Cadastro de itens</h1>
         <div className="flex gap-2 mb-1">
           <Input
@@ -60,11 +60,12 @@ const ItemsPage = () => {
           />
           <Button className="cursor-pointer" onClick={addItem}>
             <PlusIcon />
-            Adicionar
+            <p className="hidden md:block">Adicionar</p>
           </Button>
         </div>
-      </div>
-      <div className="p-5 mt-5 bg-white rounded-2xl border">
+      </section>
+
+      <section className="p-5 mt-5 bg-white rounded-2xl border max-w-[1040px] mx-auto">
         <h2 className="text-2xl font-bold mb-5">Itens</h2>
         {registeredItems.length === 0 ? (
           <EmptyState description="Sem itens cadastrados" />
@@ -80,7 +81,7 @@ const ItemsPage = () => {
             ))}
           </ul>
         )}
-      </div>
+      </section>
     </div>
   );
 }

@@ -53,7 +53,7 @@ export default function Home() {
   return (
     <div className="p-5 space-y-5">
       {/* Sacola */}
-      <section className="flex flex-col gap-4 p-5 bg-white rounded-2xl border">
+      <section className="flex flex-col max-w-[1040px] mx-auto gap-4 p-5 bg-white rounded-2xl border">
         <h1 className="text-2xl font-extrabold">Sacola</h1>
         {bagItems.length > 0 ? (
           <ItemsGridList list={bagItems} action={(name) => removeItemFromBag(name)} />
@@ -63,7 +63,7 @@ export default function Home() {
       </section>
 
       {/* Disponíveis */}
-      <section className="flex flex-col gap-4 p-5 bg-white rounded-2xl border">
+      <section className="flex flex-col max-w-[1040px] mx-auto gap-4 p-5 bg-white rounded-2xl border">
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-extrabold">Disponíveis</h2>
           <Button asChild>

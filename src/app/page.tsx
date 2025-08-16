@@ -1,10 +1,11 @@
 "use client";
 
-import { SoapDispenserDropletIcon, PlusIcon } from "lucide-react";
+import { PlusIcon } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import EmptyState from "@/components/EmptyState";
 import Link from "next/link";
+import ItemsGridList from "@/components/ItemsGridList";
 
 export default function Home() {
   const [bagItems, setBagItems] = useState<string[]>([]);
@@ -55,19 +56,7 @@ export default function Home() {
       <section className="flex flex-col gap-4 p-5 bg-white rounded-2xl border">
         <h1 className="text-2xl font-extrabold">Sacola</h1>
         {bagItems.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-8 gap-3">
-            {bagItems.map((name, index) => (
-              <Button
-                onClick={() => removeItemFromBag(name)}
-                variant="outline"
-                key={index}
-                className="flex flex-col p-4 gap-1 h-auto cursor-pointer"
-              >
-                <SoapDispenserDropletIcon />
-                <p className="mt-1 font-medium">{name}</p>
-              </Button>
-            ))}
-          </div>
+          <ItemsGridList list={bagItems} action={(name) => removeItemFromBag(name)} />
         ) : (
           <EmptyState description="Sacola vazia" />
         )}
@@ -85,19 +74,7 @@ export default function Home() {
           </Button>
         </div>
         {availableItems.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-8 gap-3">
-            {availableItems.map((name, index) => (
-              <Button
-                onClick={() => addItemToBag(name)}
-                variant="outline"
-                key={index}
-                className="flex flex-col p-4 gap-1 h-auto cursor-pointer"
-              >
-                <SoapDispenserDropletIcon />
-                <p className="mt-1 font-medium">{name}</p>
-              </Button>
-            ))}
-          </div>
+          <ItemsGridList list={availableItems} action={(name) => addItemToBag(name)} />
         ) : (
           <EmptyState description="Sem itens disponíveis" />
         )}

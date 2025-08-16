@@ -5,28 +5,37 @@ import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { ShoppingBagIcon } from "lucide-react";
 
-const ItensPage = () => {
+const ItemsPage = () => {
   const [item, setItem] = useState("");
-  const [itens, setItens] = useState<string[]>([]);
+  const [registeredItems, setRegisteredItems] = useState<string[]>([]);
+  // flag para verificar se a leitura inicial do registeredItems no localStorage
+  const [loaded, setLoaded] = useState(false);
 
   // Carregar do localStorage ao abrir a página
   useEffect(() => {
     try {
-      const saved = localStorage.getItem("itens");
-      if (saved) setItens(JSON.parse(saved));
+      const saved = localStorage.getItem("registeredItems");
+      if (saved) setRegisteredItems(JSON.parse(saved));
+      setLoaded(true);
     } catch (error) {
       console.error("Erro ao ler o localStorage", error);
     }
   }, []);
 
-  // Salvar no localStorage sempre que itens mudar
+  // Salvar no localStorage sempre que registeredItems mudar
   useEffect(() => {
-    localStorage.setItem("itens", JSON.stringify(itens));
-  }, [itens]);
+    if (loaded) {
+      localStorage.setItem("registeredItems", JSON.stringify(registeredItems));
+    }
+  }, [registeredItems, loaded]);
 
   const addItem = () => {
     if (!item.trim()) return;
-    setItens([...itens, item.trim()]);
+    if (registeredItems.includes(item.trim())) {
+      alert("Este item já foi cadastrado");
+      return;
+    }
+    setRegisteredItems([...registeredItems, item.trim()]);
     setItem("");
   }
 
@@ -39,6 +48,7 @@ const ItensPage = () => {
             type="text"
             value={item}
             onChange={(e) => setItem(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && addItem()}
             placeholder="Ex: Pão, Shampoo..."
           />
           <Button className="cursor-pointer" onClick={addItem}>Adicionar</Button>
@@ -46,16 +56,19 @@ const ItensPage = () => {
       </div>
       <div className="p-5 mt-5 bg-white rounded-2xl border">
         <h2 className="text-2xl font-bold mb-5">Itens</h2>
-        {itens.length === 0 ? (
+        {registeredItems.length === 0 ? (
           <div className="text-gray-500">
             <ShoppingBagIcon className="mx-auto mb-2" />
             <p className="text-center">Sem itens cadastrados</p>
           </div>
         ) : (
           <ul className="space-y-2">
-            {itens.map((i, index) => (
-              <li key={index} className="border p-2 rounded">
-                {i}
+            {registeredItems.map((name, index) => (
+              <li key={index} className="flex items-center justify-between border p-2 rounded-md">
+                <p className="ml-1">{name}</p>
+                <Button variant="outline" className="cursor-pointer hover:bg-red-600 hover:text-white" onClick={() => setRegisteredItems(registeredItems.filter((_, idx) => idx !== index))}>
+                  Remover
+                </Button>
               </li>
             ))}
           </ul>
@@ -65,4 +78,4 @@ const ItensPage = () => {
   );
 }
 
-export default ItensPage;
+export default ItemsPage;

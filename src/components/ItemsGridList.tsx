@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { SoapDispenserDropletIcon } from "lucide-react";
+// import { SoapDispenserDropletIcon } from "lucide-react";
 
 type ItemsGridListProps = {
   list: string[];
@@ -16,7 +16,7 @@ const ItemsGridList = ({ list, action }: ItemsGridListProps) => {
           key={index}
           className="flex flex-col p-4 gap-1 h-auto cursor-pointer"
         >
-          <SoapDispenserDropletIcon />
+          {/* <SoapDispenserDropletIcon /> */}
           <p className="mt-1 font-medium">{name}</p>
         </Button>
       ))}

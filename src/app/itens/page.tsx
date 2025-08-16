@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
+import { PlusIcon } from "lucide-react";
 import EmptyState from "@/components/EmptyState";
 
 const ItemsPage = () => {
@@ -33,7 +34,7 @@ const ItemsPage = () => {
   const addItem = () => {
     if (!item.trim()) return;
     if (registeredItems.includes(item.trim())) {
-      alert("Este item já foi cadastrado");
+      toast.warning("Este item já foi cadastrado");
       return;
     }
     setRegisteredItems([...registeredItems, item.trim()]);
@@ -57,7 +58,10 @@ const ItemsPage = () => {
             onKeyDown={(e) => e.key === "Enter" && addItem()}
             placeholder="Ex: Pão, Shampoo..."
           />
-          <Button className="cursor-pointer" onClick={addItem}>Adicionar</Button>
+          <Button className="cursor-pointer" onClick={addItem}>
+            <PlusIcon />
+            Adicionar
+          </Button>
         </div>
       </div>
       <div className="p-5 mt-5 bg-white rounded-2xl border">

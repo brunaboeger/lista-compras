@@ -1,8 +1,9 @@
 "use client";
 
-import { SoapDispenserDropletIcon, ShoppingBagIcon } from "lucide-react";
+import { SoapDispenserDropletIcon } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import EmptyState from "@/components/EmptyState";
 
 export default function Home() {
   const [bagItems, setBagItems] = useState<string[]>([]);
@@ -67,10 +68,7 @@ export default function Home() {
             ))}
           </div>
         ) : (
-          <div className="text-gray-500">
-            <ShoppingBagIcon className="mx-auto mb-2" />
-            <p className="text-center">Sacola vazia</p>
-          </div>
+          <EmptyState description="Sacola vazia" />
         )}
       </section>
 
@@ -92,10 +90,7 @@ export default function Home() {
             ))}
           </div>
         ) : (
-          <div className="text-gray-500">
-            <ShoppingBagIcon className="mx-auto mb-2" />
-            <p className="text-center">Sem itens disponíveis</p>
-          </div>
+          <EmptyState description="Sem itens disponíveis" />
         )}
       </section>
     </div>

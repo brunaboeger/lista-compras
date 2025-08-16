@@ -3,7 +3,7 @@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
-import { ShoppingBagIcon } from "lucide-react";
+import EmptyState from "@/components/EmptyState";
 
 const ItemsPage = () => {
   const [item, setItem] = useState("");
@@ -57,10 +57,7 @@ const ItemsPage = () => {
       <div className="p-5 mt-5 bg-white rounded-2xl border">
         <h2 className="text-2xl font-bold mb-5">Itens</h2>
         {registeredItems.length === 0 ? (
-          <div className="text-gray-500">
-            <ShoppingBagIcon className="mx-auto mb-2" />
-            <p className="text-center">Sem itens cadastrados</p>
-          </div>
+          <EmptyState description="Sem itens cadastrados" />
         ) : (
           <ul className="space-y-2">
             {registeredItems.map((name, index) => (

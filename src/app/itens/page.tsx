@@ -3,6 +3,7 @@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
+import { toast } from "sonner";
 import EmptyState from "@/components/EmptyState";
 
 const ItemsPage = () => {
@@ -39,6 +40,11 @@ const ItemsPage = () => {
     setItem("");
   }
 
+  const removeItem = (index: number) => {
+    setRegisteredItems(registeredItems.filter((_, idx) => idx !== index));
+    toast.success("Item removido");
+  }
+
   return (
     <div className="p-5">
       <div className="p-5 bg-white rounded-2xl border">
@@ -63,7 +69,7 @@ const ItemsPage = () => {
             {registeredItems.map((name, index) => (
               <li key={index} className="flex items-center justify-between border p-2 rounded-md">
                 <p className="ml-1">{name}</p>
-                <Button variant="outline" className="cursor-pointer hover:bg-red-600 hover:text-white" onClick={() => setRegisteredItems(registeredItems.filter((_, idx) => idx !== index))}>
+                <Button variant="outline" className="cursor-pointer hover:bg-red-600 hover:text-white" onClick={() => removeItem(index)}>
                   Remover
                 </Button>
               </li>

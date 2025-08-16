@@ -3,6 +3,7 @@ import "./globals.css";
 import { geist } from "./fonts";
 import Header from "@/components/Header";
 import Toolbar from "@/components/Toolbar";
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: "Mercado",
@@ -17,6 +18,7 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body className={`${geist.className} flex flex-col bg-gray-100`}>
+        <Toaster position="top-center" richColors />
         <Header />
         {children}
         <Toolbar />

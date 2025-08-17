@@ -1,65 +1,82 @@
 "use client";
 
-import { PlusIcon } from "lucide-react";
-import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import EmptyState from "@/components/EmptyState";
+import { getAvailableItems, moveToBag, removeFromBag, getBagItems } from "@/lib/actions";
+import { useEffect, useState } from "react";
+
 import Link from "next/link";
-import ItemsGridList from "@/components/ItemsGridList";
+import EmptyState from "@/components/EmptyState";
+import * as LucideIcons from "lucide-react";
+
+type Item = {
+  id: number,
+  name: string,
+  icon: string,
+}
 
 export default function Home() {
-  const [bagItems, setBagItems] = useState<string[]>([]);
-  const [registeredItems, setRegisteredItems] = useState<string[]>([]);
+  const [items, setItems] = useState<Item[]>([]);
+  const [bagItems, setBagItems] = useState<Item[]>([]);
 
-  // Carrega os dados do localStorage ao iniciar
+  const fetchItems = async () => {
+    const data = await getAvailableItems();
+    setItems(data);
+  };
+
+  const itemsFromBag = async () => {
+    const data = await getBagItems();
+    setBagItems(data);
+  }
+
+  const addToBag = async (id: number) => {
+    await moveToBag(id);
+    fetchItems();
+    itemsFromBag();
+  };
+
+  const removeItemFromBag = async (id: number) => {
+    await removeFromBag(id);
+    itemsFromBag();
+    fetchItems();
+  }
+
   useEffect(() => {
-    try {
-      const getRegistered = localStorage.getItem("registeredItems");
-      const getBag = localStorage.getItem("bagItens");
-
-      const parsedRegistered = getRegistered ? JSON.parse(getRegistered) : [];
-      const parsedBag = getBag ? JSON.parse(getBag) : [];
-
-      setRegisteredItems(parsedRegistered);
-      setBagItems(parsedBag);
-    } catch (error) {
-      console.error("Erro ao carregar dados do localStorage:", error);
-    }
+    fetchItems();
+    itemsFromBag();
   }, []);
 
-  // Calcula os itens disponíveis dinamicamente
-  const availableItems = registeredItems.filter(
-    item => !bagItems.includes(item)
+  const sortedRegisteredList = [...items].sort((a, b) =>
+    a.name.localeCompare(b.name)
   );
-
-  // Adiciona item à sacola
-  const addItemToBag = (name: string) => {
-    if (!bagItems.includes(name)) {
-      const updatedBag = [...bagItems, name];
-      setBagItems(updatedBag);
-      localStorage.setItem("bagItens", JSON.stringify(updatedBag));
-    }
-  };
-
-  // Remove item da sacola
-  const removeItemFromBag = (name: string) => {
-    if (bagItems.includes(name)) {
-      const updatedBag = bagItems.filter(item => item !== name);
-      setBagItems(updatedBag);
-      localStorage.setItem("bagItens", JSON.stringify(updatedBag));
-    }
-  };
 
   return (
     <div className="p-5 space-y-5">
       {/* Sacola */}
       <section className="flex flex-col max-w-[1040px] mx-auto gap-4 p-5 bg-white rounded-2xl border">
         <h1 className="text-2xl font-extrabold">Sacola</h1>
-        {bagItems.length > 0 ? (
-          <ItemsGridList list={bagItems} action={(name) => removeItemFromBag(name)} />
-        ) : (
-          <EmptyState description="Sacola vazia" />
-        )}
+        {/* <BagItems /> */}
+        <div>
+          {bagItems.length > 0 ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+              {bagItems.map((item) => {
+                const Icon = LucideIcons[item.icon as keyof typeof LucideIcons] as unknown as React.FC<React.SVGProps<SVGSVGElement>>;
+                return (
+                  <Button
+                    variant="outline"
+                    key={item.id}
+                    className="flex flex-col p-4 gap-1 h-auto cursor-pointer"
+                    onClick={() => removeItemFromBag(item.id)}
+                  >
+                    {Icon && <Icon />}
+                    <p className="mt-1 font-medium">{item.name}</p>
+                  </Button>
+                )
+              })}
+            </div>
+          ) : (
+            <EmptyState description="Sacola vazia" />
+          )}
+        </div>
       </section>
 
       {/* Disponíveis */}
@@ -68,16 +85,32 @@ export default function Home() {
           <h2 className="text-2xl font-extrabold">Disponíveis</h2>
           <Button asChild>
             <Link href="/itens">
-              <PlusIcon />
               Novo item
             </Link>
           </Button>
         </div>
-        {availableItems.length > 0 ? (
-          <ItemsGridList list={availableItems} action={(name) => addItemToBag(name)} />
-        ) : (
-          <EmptyState description="Sem itens disponíveis" />
-        )}
+        <div>
+          {sortedRegisteredList?.length > 0 ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+              {sortedRegisteredList.map((item) => {
+                const Icon = LucideIcons[item.icon as keyof typeof LucideIcons] as unknown as React.FC<React.SVGProps<SVGSVGElement>>;
+                return (
+                  <Button
+                    variant="outline"
+                    key={item.id}
+                    className="flex flex-col p-4 gap-1 h-auto cursor-pointer"
+                    onClick={() => addToBag(item.id)}
+                  >
+                    {Icon && <Icon />}
+                    <p className="mt-1 font-medium">{item.name}</p>
+                  </Button>
+                )
+              })}
+            </div>
+          ) : (
+            <EmptyState description="Sem itens disponíveis" />
+          )}
+        </div>
       </section>
     </div>
   );

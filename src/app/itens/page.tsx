@@ -1,8 +1,8 @@
-import { getItems } from "@/data/route";
+import { getItems } from "@/lib/actions";
 import { Button } from "@/components/ui/button";
 import NewItemForm from "@/components/itens/NewItemForm";
 import EmptyState from "@/components/EmptyState";
-import * as LucideIcons from "lucide-react"; // importa todos os ícones
+import * as LucideIcons from "lucide-react";
 
 const ItemsPage = async () => {
   const registeredItems = await getItems();
@@ -19,7 +19,7 @@ const ItemsPage = async () => {
       </section>
 
       <section className="p-5 mt-5 bg-white rounded-2xl border max-w-[1040px] mx-auto">
-        <h2 className="text-2xl font-bold mb-5">Cadastrados</h2>
+        <h2 className="text-2xl font-bold mb-5">Cadastrados ({registeredItems.length})</h2>
         {registeredItems.length === 0 ? (
           <EmptyState description="Sem itens cadastrados" />
         ) : (

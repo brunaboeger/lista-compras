@@ -3,7 +3,6 @@
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 
-import Link from "next/link";
 import EmptyState from "@/components/EmptyState";
 import * as LucideIcons from "lucide-react";
 

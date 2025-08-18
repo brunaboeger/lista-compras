@@ -74,7 +74,7 @@ const ItemsPage = () => {
   }
 
   return (
-    <div className="p-5">
+    <>
       <section className="p-5 bg-white rounded-2xl border max-w-[1040px] mx-auto">
         <h1 className="text-2xl font-bold mb-5">Novo item</h1>
         <div className="flex gap-2 mb-1">
@@ -86,8 +86,7 @@ const ItemsPage = () => {
             placeholder="Ex: Pão, Shampoo..."
           />
           <Button className="cursor-pointer">
-            <PlusIcon />
-            <p className="hidden md:block">Adicionar</p>
+            <p>Adicionar</p>
           </Button>
         </div>
       </section>
@@ -120,7 +119,7 @@ const ItemsPage = () => {
           </ul>
         )}
       </section>
-    </div >
+    </ >
   );
 }
 

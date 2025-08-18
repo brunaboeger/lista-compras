@@ -14,6 +14,19 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.main-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-y: hidden;
+}
+
+.content-container {
+  height: calc(100% - 81px);
+  padding-bottom: calc(77px + 24px);
+  overflow-y: scroll;
+}
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);

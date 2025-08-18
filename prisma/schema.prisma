@@ -23,15 +23,15 @@ model User {
 }
 
 model Item {
-  id   Int    @id @default(autoincrement())
-  name String
-  icon String
-  status ItemStatus @default(disponível)
-  createdAt DateTime @default(now())
+  id         Int        @id @default(autoincrement())
+  name       String     @unique
+  icon       String
+  registered Boolean    @default(true)
+  status     ItemStatus @default(disponível)
+  createdAt  DateTime   @default(now())
 }
 
 enum ItemStatus {
-  registrado
   disponível
   sacola
 }

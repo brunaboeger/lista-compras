@@ -15,7 +15,7 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   name      String
   email     String   @unique
   createdAt DateTime @default(now())
@@ -23,15 +23,23 @@ model User {
 }
 
 model Item {
-  id         Int        @id @default(autoincrement())
+  id         String     @id @default(uuid())
   name       String     @unique
   icon       String
   registered Boolean    @default(true)
-  status     ItemStatus @default(disponível)
+  status     ItemStatus @default(DISPONIVEL)
   createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt @default(now())
+}
+
+model Icon {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum ItemStatus {
-  disponível
-  sacola
+  DISPONIVEL
+  SACOLA
 }

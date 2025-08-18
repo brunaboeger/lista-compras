@@ -3,8 +3,7 @@ import prisma from "@/lib/prisma";
 
 export async function GET() {
   const items = await prisma.item.findMany({
-    where: { status: "disponível" },
+    where: { status: "sacola" },
   });
-
   return NextResponse.json(items);
 }

@@ -32,7 +32,9 @@ export async function DELETE(
   context: { params: { id: string } }
 ) {
   try {
-    const { id } = context.params;
+    const contextId = await context.params;
+    const id = contextId.id;
+
     const deletedItem = await prisma.item.delete({
       where: { id },
     });

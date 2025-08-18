@@ -32,17 +32,10 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = await params;
-    const deletedItem = await prisma.item.deleteMany({
+    const { id } = params;
+    const deletedItem = await prisma.item.delete({
       where: { id },
     });
-
-    if (deletedItem.count === 0) {
-      return NextResponse.json(
-        { message: "Item não encontrado" },
-        { status: 404 }
-      );
-    }
 
     return NextResponse.json({
       message: "Item deletado com sucesso",

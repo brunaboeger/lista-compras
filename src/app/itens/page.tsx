@@ -84,7 +84,7 @@ const ItemsPage = () => {
             onKeyDown={(e) => e.key === "Enter" && addNewItem({ name: newItem, icon: "" })}
             placeholder="Ex: Pão, Shampoo..."
           />
-          <Button className="cursor-pointer">
+          <Button onClick={() => addNewItem({ name: newItem, icon: "" })} className="cursor-pointer">
             <p>Adicionar</p>
           </Button>
         </div>

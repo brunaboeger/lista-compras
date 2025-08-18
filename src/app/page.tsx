@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { getAvailableItems, moveToBag, removeFromBag, getBagItems } from "@/lib/actions";
+import { moveToBag, removeFromBag, getBagItems } from "@/lib/actions";
 import { useEffect, useState } from "react";
 
 import Link from "next/link";
@@ -19,7 +19,8 @@ export default function Home() {
   const [bagItems, setBagItems] = useState<Item[]>([]);
 
   const fetchItems = async () => {
-    const data = await getAvailableItems();
+    const res = await fetch("/api/items");
+    const data = await res.json();
     setItems(data);
   };
 

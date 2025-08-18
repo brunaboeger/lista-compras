@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
 export async function PATCH(
@@ -28,13 +28,11 @@ export async function PATCH(
 }
 
 export async function DELETE(
-  request: Request,
-  context: { params: { id: string } }
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const contextId = await context.params;
-    const id = contextId.id;
-
+    const { id } = await params;
     const deletedItem = await prisma.item.delete({
       where: { id },
     });

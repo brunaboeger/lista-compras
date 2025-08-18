@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { moveToBag, removeFromBag, getBagItems } from "@/lib/actions";
 import { useEffect, useState } from "react";
 
 import Link from "next/link";
@@ -18,32 +17,78 @@ export default function Home() {
   const [items, setItems] = useState<Item[]>([]);
   const [bagItems, setBagItems] = useState<Item[]>([]);
 
-  const fetchItems = async () => {
-    const res = await fetch("/api/items");
-    const data = await res.json();
-    setItems(data);
+  const fetchAvailableItems = async () => {
+    try {
+      const response = await fetch("/api/available");
+      const data = await response.json();
+
+      if (!response.ok) throw new Error(`Erro ${response.status}`);
+      else setItems(data);
+    } catch (error) {
+      console.error("Não foi possível encontrar os itens disponíveis.", error);
+    }
   };
 
-  const itemsFromBag = async () => {
-    const data = await getBagItems();
-    setBagItems(data);
+  const fetchBagItems = async () => {
+    try {
+      const response = await fetch("/api/bag");
+      const data = await response.json();
+      setBagItems(data);
+    } catch (error) {
+      console.error("Não foi possível encontrar os itens na sacola.", error);
+    }
   }
 
-  const addToBag = async (id: number) => {
-    await moveToBag(id);
-    fetchItems();
-    itemsFromBag();
+  const addToBag = async ({ item }: { item: { id: number } }) => {
+    try {
+      const response = await fetch(`/api/itens/${item.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ status: "SACOLA" }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Erro ao atualizar status do item");
+      }
+
+      fetchAvailableItems();
+      fetchBagItems();
+      const result = await response.json();
+      return result;
+
+    } catch (error) {
+      console.error(error);
+    }
   };
 
-  const removeItemFromBag = async (id: number) => {
-    await removeFromBag(id);
-    itemsFromBag();
-    fetchItems();
+  const removeItemFromBag = async ({ item }: { item: { id: number } }) => {
+    try {
+      const response = await fetch(`/api/itens/${item.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ status: "DISPONIVEL" }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Erro ao atualizar status do item");
+      }
+
+      fetchBagItems();
+      fetchAvailableItems();
+      const result = await response.json();
+      return result;
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   useEffect(() => {
-    fetchItems();
-    itemsFromBag();
+    fetchAvailableItems();
+    fetchBagItems();
   }, []);
 
   const sortedRegisteredList = [...items].sort((a, b) =>
@@ -66,7 +111,7 @@ export default function Home() {
                     variant="outline"
                     key={item.id}
                     className="flex flex-col p-4 gap-1 h-auto cursor-pointer"
-                    onClick={() => removeItemFromBag(item.id)}
+                    onClick={() => removeItemFromBag({ item })}
                   >
                     {Icon && <Icon />}
                     <p className="mt-1 font-medium">{item.name}</p>
@@ -100,7 +145,7 @@ export default function Home() {
                     variant="outline"
                     key={item.id}
                     className="flex flex-col p-4 gap-1 h-auto cursor-pointer"
-                    onClick={() => addToBag(item.id)}
+                    onClick={() => addToBag({ item })}
                   >
                     {Icon && <Icon />}
                     <p className="mt-1 font-medium">{item.name}</p>

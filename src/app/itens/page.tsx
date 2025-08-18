@@ -1,11 +1,11 @@
 "use client";
 
-import { getItems, createItem, deleteItem } from "@/lib/actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PlusIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+
 import EmptyState from "@/components/EmptyState";
 import * as LucideIcons from "lucide-react";
 
@@ -19,8 +19,9 @@ const ItemsPage = () => {
   const [newItem, setNewItem] = useState("");
   const [items, setItems] = useState<Item[]>([]);
 
-  const registeredItems = async () => {
-    const data = await getItems();
+  const fetchItems = async () => {
+    const response = await fetch("/api/itens");
+    const data = await response.json();
     setItems(data);
   };
 
@@ -29,26 +30,47 @@ const ItemsPage = () => {
   );
 
   useEffect(() => {
-    registeredItems();
+    fetchItems();
   }, []);
 
-  const addNewItem = async (item: string) => {
-    const alreadyExists = items.some(existing => existing.name === item);
+  const addNewItem = async (data: { name: string, icon: string }) => {
+    const response = await fetch("/api/itens", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
 
-    if (!alreadyExists) {
-      await createItem({ name: item.trim(), icon: "" });
-      registeredItems();
-      setNewItem("");
-      toast.success("Item adicionado");
-    } else {
+    const result = await response.json();
+
+    if (!response.ok) {
+      console.error("Erro ao criar item:", result.error);
       toast.warning("Item já existe");
+      return;
     }
+
+    fetchItems();
+    setNewItem("");
+    toast.success(`Item ${data.name} adicionado`);
   }
 
-  const removeItem = async (itemId: number) => {
-    await deleteItem(itemId);
-    registeredItems();
-    toast.success("Item removido");
+  const removeItem = async ({ item }: { item: { id: number } }) => {
+    try {
+      const response = await fetch(`/api/itens/${item.id}`, { method: "DELETE" });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        fetchItems();
+        toast.success(result.message);
+      } else {
+        console.error("Erro ao deletar item.", result.error);
+        toast.error(result.message);
+      }
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   return (
@@ -60,7 +82,7 @@ const ItemsPage = () => {
             type="text"
             value={newItem}
             onChange={(e) => setNewItem(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && addNewItem(newItem)}
+            onKeyDown={(e) => e.key === "Enter" && addNewItem({ name: newItem, icon: "" })}
             placeholder="Ex: Pão, Shampoo..."
           />
           <Button className="cursor-pointer">
@@ -68,7 +90,6 @@ const ItemsPage = () => {
             <p className="hidden md:block">Adicionar</p>
           </Button>
         </div>
-        {/* <NewItemForm /> */}
       </section>
 
       <section className="p-5 mt-5 bg-white rounded-2xl border max-w-[1040px] mx-auto">
@@ -89,7 +110,7 @@ const ItemsPage = () => {
                   <Button
                     variant="outline"
                     className="cursor-pointer hover:bg-red-600 hover:text-white"
-                    onClick={() => removeItem(item.id)}
+                    onClick={() => removeItem({ item })}
                   >
                     Remover
                   </Button>

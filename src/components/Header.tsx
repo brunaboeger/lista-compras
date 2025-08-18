@@ -6,7 +6,7 @@ export default function Header() {
           <div className="flex items-center justify-center border rounded-full w-[40px] h-[40px] bg-white text-gray-950">
             C
           </div>
-          <h3 className="font-medium">Olá, Caitlyn</h3>
+          <h3 className="font-medium">Olá!</h3>
         </div>
       </div>
     </header>

@@ -97,7 +97,7 @@ const ItemsPage = () => {
         {sortedRegisteredList.length === 0 ? (
           <EmptyState description="Sem itens cadastrados" />
         ) : (
-          <ul className="grid grid-cols-2 gap-2">
+          <ul className="grid md:grid-cols-2 gap-2">
             {sortedRegisteredList.map((item, index) => {
               const Icon = LucideIcons[item.icon as keyof typeof LucideIcons] as unknown as React.FC<React.SVGProps<SVGSVGElement>>;
 

@@ -6,7 +6,9 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Trash2Icon } from "lucide-react";
 
+import Loading from "./loading";
 import EmptyState from "@/components/EmptyState";
+
 // import * as LucideIcons from "lucide-react";
 
 type Item = {
@@ -18,11 +20,20 @@ type Item = {
 const ItemsPage = () => {
   const [newItem, setNewItem] = useState("");
   const [items, setItems] = useState<Item[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchItems = async () => {
-    const response = await fetch("/api/itens");
-    const data = await response.json();
-    setItems(data);
+    try {
+      setIsLoading(true);
+      const response = await fetch("/api/itens");
+      const data = await response.json();
+      setItems(data);
+    } catch (error) {
+      console.error("Erro ao buscar itens", error);
+      toast.error("Falha ao carregar a lista de itens.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const sortedRegisteredList = [...items].sort((a, b) =>
@@ -107,7 +118,9 @@ const ItemsPage = () => {
 
       <section className="p-5 mt-5 bg-white rounded-2xl border max-w-[1040px] mx-auto">
         <h2 className="text-2xl font-bold mb-5">Cadastrados ({sortedRegisteredList.length})</h2>
-        {sortedRegisteredList.length === 0 ? (
+        {isLoading ? (
+          <Loading />
+        ) : sortedRegisteredList.length === 0 ? (
           <EmptyState description="Sem itens cadastrados" />
         ) : (
           <ul className="grid md:grid-cols-2 gap-2">

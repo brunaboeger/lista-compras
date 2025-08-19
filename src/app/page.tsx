@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 
 import EmptyState from "@/components/EmptyState";
+import Loading from "./loading";
+
 // import * as LucideIcons from "lucide-react";
 
 type Item = {
@@ -15,9 +17,11 @@ type Item = {
 export default function Home() {
   const [items, setItems] = useState<Item[]>([]);
   const [bagItems, setBagItems] = useState<Item[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchAvailableItems = async () => {
     try {
+      setIsLoading(true);
       const response = await fetch("/api/available");
       const data = await response.json();
 
@@ -25,6 +29,8 @@ export default function Home() {
       else setItems(data);
     } catch (error) {
       console.error("Não foi possível encontrar os itens disponíveis.", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -77,7 +83,9 @@ export default function Home() {
       <section className="flex flex-col max-w-[1040px] mx-auto gap-4 p-5 bg-white rounded-2xl border">
         <h1 className="text-2xl font-extrabold">Sacola ({bagItems.length})</h1>
         <div>
-          {bagItems.length > 0 ? (
+          {isLoading ? (
+            <Loading length={3} />
+          ) : bagItems.length > 0 ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
               {bagItems.map((item) => {
                 // const Icon = LucideIcons[item.icon as keyof typeof LucideIcons] as unknown as React.FC<React.SVGProps<SVGSVGElement>>;
@@ -106,7 +114,9 @@ export default function Home() {
           <h2 className="text-2xl font-extrabold">Disponíveis</h2>
         </div>
         <div>
-          {sortedRegisteredList?.length > 0 ? (
+          {isLoading ? (
+            <Loading length={30} />
+          ) : sortedRegisteredList?.length > 0 ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
               {sortedRegisteredList.map((item) => {
                 // const Icon = LucideIcons[item.icon as keyof typeof LucideIcons] as unknown as React.FC<React.SVGProps<SVGSVGElement>>;

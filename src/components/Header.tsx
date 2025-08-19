@@ -4,7 +4,7 @@ export default function Header() {
       <div className="flex items-center justify-between max-w-[1040px] mx-auto">
         <div className="flex items-center gap-2">
           <div className="flex items-center justify-center border rounded-full w-[40px] h-[40px] bg-white text-gray-950">
-            C
+            O
           </div>
           <h3 className="font-medium">Olá!</h3>
         </div>

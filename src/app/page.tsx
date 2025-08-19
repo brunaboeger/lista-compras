@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 
 import EmptyState from "@/components/EmptyState";
-import * as LucideIcons from "lucide-react";
+// import * as LucideIcons from "lucide-react";
 
 type Item = {
   id: number,
@@ -38,14 +38,14 @@ export default function Home() {
     }
   }
 
-  const addToBag = async ({ item }: { item: { id: number } }) => {
+  const handleItemStatus = async ({ item }: { item: { id: number } }, itemStatus: string) => {
     try {
       const response = await fetch(`/api/itens/${item.id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ status: "SACOLA" }),
+        body: JSON.stringify({ status: itemStatus }),
       });
 
       if (!response.ok) {
@@ -62,29 +62,6 @@ export default function Home() {
     }
   };
 
-  const removeItemFromBag = async ({ item }: { item: { id: number } }) => {
-    try {
-      const response = await fetch(`/api/itens/${item.id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ status: "DISPONIVEL" }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Erro ao atualizar status do item");
-      }
-
-      fetchBagItems();
-      fetchAvailableItems();
-      const result = await response.json();
-      return result;
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
   useEffect(() => {
     fetchAvailableItems();
     fetchBagItems();
@@ -98,21 +75,20 @@ export default function Home() {
     <>
       {/* Sacola */}
       <section className="flex flex-col max-w-[1040px] mx-auto gap-4 p-5 bg-white rounded-2xl border">
-        <h1 className="text-2xl font-extrabold">Sacola</h1>
-        {/* <BagItems /> */}
+        <h1 className="text-2xl font-extrabold">Sacola ({bagItems.length})</h1>
         <div>
           {bagItems.length > 0 ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
               {bagItems.map((item) => {
-                const Icon = LucideIcons[item.icon as keyof typeof LucideIcons] as unknown as React.FC<React.SVGProps<SVGSVGElement>>;
+                // const Icon = LucideIcons[item.icon as keyof typeof LucideIcons] as unknown as React.FC<React.SVGProps<SVGSVGElement>>;
                 return (
                   <Button
                     variant="outline"
                     key={item.id}
                     className="flex flex-col p-4 gap-1 h-auto cursor-pointer"
-                    onClick={() => removeItemFromBag({ item })}
+                    onClick={() => handleItemStatus({ item }, "DISPONIVEL")}
                   >
-                    {Icon && <Icon />}
+                    {/* {Icon && <Icon />} */}
                     <p className="mt-1 font-medium">{item.name}</p>
                   </Button>
                 )
@@ -133,15 +109,15 @@ export default function Home() {
           {sortedRegisteredList?.length > 0 ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
               {sortedRegisteredList.map((item) => {
-                const Icon = LucideIcons[item.icon as keyof typeof LucideIcons] as unknown as React.FC<React.SVGProps<SVGSVGElement>>;
+                // const Icon = LucideIcons[item.icon as keyof typeof LucideIcons] as unknown as React.FC<React.SVGProps<SVGSVGElement>>;
                 return (
                   <Button
                     variant="outline"
                     key={item.id}
                     className="flex flex-col p-4 gap-1 h-auto cursor-pointer"
-                    onClick={() => addToBag({ item })}
+                    onClick={() => handleItemStatus({ item }, "SACOLA")}
                   >
-                    {Icon && <Icon />}
+                    {/* {Icon && <Icon />} */}
                     <p className="mt-1 font-medium">{item.name}</p>
                   </Button>
                 )

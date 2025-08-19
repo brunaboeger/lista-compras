@@ -4,9 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { Trash2Icon } from "lucide-react";
 
 import EmptyState from "@/components/EmptyState";
-import * as LucideIcons from "lucide-react";
+// import * as LucideIcons from "lucide-react";
 
 type Item = {
   id: number,
@@ -97,20 +98,20 @@ const ItemsPage = () => {
         ) : (
           <ul className="grid md:grid-cols-2 gap-2">
             {sortedRegisteredList.map((item, index) => {
-              const Icon = LucideIcons[item.icon as keyof typeof LucideIcons] as unknown as React.FC<React.SVGProps<SVGSVGElement>>;
+              // const Icon = LucideIcons[item.icon as keyof typeof LucideIcons] as unknown as React.FC<React.SVGProps<SVGSVGElement>>;
 
               return (
                 <li key={index} className="flex items-center justify-between border p-2 rounded-md" >
                   <div className="flex gap-3 items-center ml-1">
-                    {Icon && <Icon className="w-[18px]" />}
+                    {/* {Icon && <Icon className="w-[18px]" />} */}
                     <p>{item.name}</p>
                   </div>
                   <Button
-                    variant="outline"
+                    variant="secondary" size="icon"
                     className="cursor-pointer hover:bg-red-600 hover:text-white"
                     onClick={() => removeItem({ item })}
                   >
-                    Remover
+                    <Trash2Icon />
                   </Button>
                 </li>
               )

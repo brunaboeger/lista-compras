@@ -33,13 +33,27 @@ const ItemsPage = () => {
     fetchItems();
   }, []);
 
+  const capitalizeFirstLetter = (name: string) => {
+    if (typeof name !== "string" || name.length === 0) {
+      return name;
+    }
+
+    return name.charAt(0).toUpperCase() + name.slice(1);
+  };
+
   const addNewItem = async (data: { name: string, icon: string }) => {
+    const { name, icon } = data;
+    const nameFormatted = capitalizeFirstLetter(name);
+
     const response = await fetch("/api/itens", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify({
+        name: nameFormatted,
+        icon
+      }),
     })
 
     const result = await response.json();

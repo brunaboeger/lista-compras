@@ -27,13 +27,13 @@ model User {
 }
 
 model Item {
-  id         String     @id @default(uuid())
-  name       String     @unique
-  icon       String
-  registered Boolean    @default(true)
-  status     ItemStatus @default(DISPONIVEL)
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt @default(now())
+  id        String     @id @default(uuid())
+  name      String     @unique
+  icon      String
+  price     String
+  status    ItemStatus @default(DISPONIVEL)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @default(now()) @updatedAt
 }
 
 model Icon {

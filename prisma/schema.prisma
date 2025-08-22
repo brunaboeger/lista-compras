@@ -30,7 +30,7 @@ model Item {
   id        String     @id @default(uuid())
   name      String     @unique
   icon      String
-  price     String
+  price     Decimal?    @db.Decimal(10, 2)
   status    ItemStatus @default(DISPONIVEL)
   createdAt DateTime   @default(now())
   updatedAt DateTime   @default(now()) @updatedAt

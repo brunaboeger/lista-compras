@@ -3,8 +3,13 @@ import { ItemStatus } from "@prisma/client";
 import prisma from "@/lib/prisma";
 
 export async function GET() {
-  const items = await prisma.item.findMany();
-  return NextResponse.json(items);
+  try {
+    const items = await prisma.item.findMany();
+    return NextResponse.json(items);
+  } catch (error) {
+    console.error("Erro ao buscar itens.", error);
+    return new NextResponse("Erro interno no servidor", { status: 500 });
+  }
 }
 
 export async function POST(request: NextRequest) {

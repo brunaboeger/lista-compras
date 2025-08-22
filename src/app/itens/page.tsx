@@ -231,7 +231,7 @@ const ItemsPage = () => {
       <section className="p-5 mt-5 bg-white rounded-2xl border max-w-[1040px] mx-auto">
         <h2 className="text-2xl font-bold mb-5">Cadastrados ({sortedRegisteredList.length})</h2>
         {isLoading ? (
-          <Loading />
+          <Loading length={15} />
         ) : sortedRegisteredList.length === 0 ? (
           <EmptyState description="Sem itens cadastrados" />
         ) : (

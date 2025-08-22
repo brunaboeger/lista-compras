@@ -2,21 +2,23 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
 import { Trash2Icon } from "lucide-react";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
+import { toast } from "sonner";
+
+import { useEffect, useState } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import Loading from "./loading";
 import EmptyState from "@/components/EmptyState";
+import EditItemDialog from "@/components/itens/EditItemDialog";
 
 // import * as LucideIcons from "lucide-react";
 
-type Item = {
-  id: number,
+interface Item {
+  id: string,
   name: string,
   icon: string,
   price: string,
@@ -62,7 +64,7 @@ const ItemsPage = () => {
     return name.charAt(0).toUpperCase() + name.slice(1);
   };
 
-  const addNewItem = async (values: z.infer<typeof formSchema>) => {
+  const addItem = async (values: z.infer<typeof formSchema>) => {
     const { name, icon, price } = values;
     const nameFormatted = capitalizeFirstLetter(name);
 
@@ -87,10 +89,10 @@ const ItemsPage = () => {
     }
 
     fetchItems();
-    toast.success(`Item ${values.name} adicionado`);
+    toast.success(`Item ${name} adicionado`);
   }
 
-  const removeItem = async ({ item }: { item: { id: number } }) => {
+  const removeItem = async ({ item }: { item: { id: string } }) => {
     try {
       const response = await fetch(`/api/itens/${item.id}`, { method: "DELETE" });
 
@@ -105,6 +107,38 @@ const ItemsPage = () => {
       }
     } catch (error) {
       console.error(error);
+    }
+  }
+
+  const updateItem = async (item: { id: string, name: string, icon: string, price: string }) => {
+    console.log(item);
+
+    try {
+      const response = await fetch(`/api/itens/${item.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: item.name,
+          icon: item.icon,
+          price: item.price,
+        }),
+      })
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        console.error("Erro ao criar item:", result.error);
+        toast.warning("Não foi possível atualizar o item");
+        return;
+      }
+
+      fetchItems();
+      toast.success(`Item ${item.name} atualizado`);
+    } catch (error) {
+      console.error("Erro ao deletar item.", error);
+      toast.error("Erro ao deletar item");
     }
   }
 
@@ -126,7 +160,7 @@ const ItemsPage = () => {
       price
     }
 
-    addNewItem(itemData);
+    addItem(itemData);
   }
 
   return (
@@ -214,13 +248,17 @@ const ItemsPage = () => {
                       <small className="text-gray-500">R$ {item.price}</small>
                     </div>
                   </div>
-                  <Button
-                    variant="secondary" size="icon"
-                    className="cursor-pointer hover:bg-red-600 hover:text-white"
-                    onClick={() => removeItem({ item })}
-                  >
-                    <Trash2Icon />
-                  </Button>
+                  <div className="flex gap-2">
+                    <EditItemDialog item={item} update={(values) => updateItem({ ...values, id: item.id })} />
+
+                    <Button
+                      variant="secondary" size="icon"
+                      className="cursor-pointer hover:bg-red-600 hover:text-white"
+                      onClick={() => removeItem({ item })}
+                    >
+                      <Trash2Icon />
+                    </Button>
+                  </div>
                 </li>
               )
             })}

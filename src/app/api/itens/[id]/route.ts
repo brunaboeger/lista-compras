@@ -6,13 +6,13 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const body = await request.json();
-  const { name, icon, status } = body;
+  const { name, icon, price, status } = body;
 
   try {
     const { id } = await params;
     const updatedItem = await prisma.item.update({
       where: { id },
-      data: { name, icon, status },
+      data: { name, icon, price, status },
     });
 
     return NextResponse.json(updatedItem);

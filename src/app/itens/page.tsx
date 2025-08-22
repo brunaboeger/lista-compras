@@ -5,6 +5,10 @@ import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Trash2Icon } from "lucide-react";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import Loading from "./loading";
 import EmptyState from "@/components/EmptyState";
@@ -15,10 +19,16 @@ type Item = {
   id: number,
   name: string,
   icon: string,
+  price: string,
 }
 
+const formSchema = z.object({
+  name: z.string(),
+  icon: z.string(),
+  price: z.string(),
+});
+
 const ItemsPage = () => {
-  const [newItem, setNewItem] = useState("");
   const [items, setItems] = useState<Item[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -52,8 +62,8 @@ const ItemsPage = () => {
     return name.charAt(0).toUpperCase() + name.slice(1);
   };
 
-  const addNewItem = async (data: { name: string, icon: string }) => {
-    const { name, icon } = data;
+  const addNewItem = async (values: z.infer<typeof formSchema>) => {
+    const { name, icon, price } = values;
     const nameFormatted = capitalizeFirstLetter(name);
 
     const response = await fetch("/api/itens", {
@@ -63,7 +73,8 @@ const ItemsPage = () => {
       },
       body: JSON.stringify({
         name: nameFormatted,
-        icon
+        icon,
+        price
       }),
     })
 
@@ -76,8 +87,7 @@ const ItemsPage = () => {
     }
 
     fetchItems();
-    setNewItem("");
-    toast.success(`Item ${data.name} adicionado`);
+    toast.success(`Item ${values.name} adicionado`);
   }
 
   const removeItem = async ({ item }: { item: { id: number } }) => {
@@ -98,21 +108,89 @@ const ItemsPage = () => {
     }
   }
 
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      icon: "",
+      price: "",
+    }
+  });
+
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    const { name, icon, price } = values;
+
+    const itemData = {
+      name,
+      icon,
+      price
+    }
+
+    addNewItem(itemData);
+  }
+
   return (
     <>
       <section className="p-5 bg-white rounded-2xl border max-w-[1040px] mx-auto">
         <h1 className="text-2xl font-bold mb-5">Novo item</h1>
-        <div className="flex gap-2 mb-1">
-          <Input
-            type="text"
-            value={newItem}
-            onChange={(e) => setNewItem(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && addNewItem({ name: newItem, icon: "" })}
-            placeholder="Ex: Pão, Shampoo..."
-          />
-          <Button onClick={() => addNewItem({ name: newItem, icon: "" })} className="cursor-pointer">
-            <p>Adicionar</p>
-          </Button>
+        <div className="flex mb-1">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="flex gap-2 w-full">
+              <FormField
+                control={form.control}
+                name="icon"
+                render={({ field }) => (
+                  <FormItem className="grow">
+                    <FormControl>
+                      <Input
+                        type="text"
+                        placeholder="Ex: ShoppingBagIcon"
+                        {...field}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem className="grow">
+                    <FormControl>
+                      <Input
+                        type="text"
+                        placeholder="Ex: Pão, Shampoo..."
+                        {...field}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="price"
+                render={({ field }) => (
+                  <FormItem className="grow">
+                    <FormControl>
+                      <Input
+                        type="text"
+                        placeholder="Ex: 10,00"
+                        {...field}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              <div>
+                <Button type="submit" className="cursor-pointer">
+                  Adicionar
+                </Button>
+              </div>
+            </form>
+          </Form>
         </div>
       </section>
 
@@ -131,7 +209,10 @@ const ItemsPage = () => {
                 <li key={index} className="flex items-center justify-between border p-2 rounded-md" >
                   <div className="flex gap-3 items-center ml-1">
                     {/* {Icon && <Icon className="w-[18px]" />} */}
-                    <p>{item.name}</p>
+                    <div>
+                      <p>{item.name}</p>
+                      <small className="text-gray-500">R$ {item.price}</small>
+                    </div>
                   </div>
                   <Button
                     variant="secondary" size="icon"

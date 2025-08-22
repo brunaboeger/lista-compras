@@ -9,7 +9,7 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
-  const { name, icon } = body;
+  const { name, icon, price } = body;
 
   // Verifica se existe um item com o mesmo nome
   const existing = await prisma.item.findUnique({
@@ -28,6 +28,7 @@ export async function POST(request: NextRequest) {
       data: {
         name: name,
         icon: icon,
+        price: price,
         status: ItemStatus.DISPONIVEL,
       },
     });

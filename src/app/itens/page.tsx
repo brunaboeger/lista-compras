@@ -77,11 +77,17 @@ const ItemsPage = () => {
         icon,
         price,
       }),
-    })
+    });
 
     const result = await response.json();
 
     if (response.ok) {
+      form.reset({
+        name: "",
+        icon: "",
+        price: "",
+      });
+
       fetchItems();
       toast.success(`Item ${name} adicionado`);
     } else {
@@ -137,14 +143,8 @@ const ItemsPage = () => {
     }
   }
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    const { name, icon, price } = values;
-
-    addItem({
-      name,
-      icon,
-      price,
-    });
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    addItem(values);
   }
 
   useEffect(() => {
@@ -160,29 +160,13 @@ const ItemsPage = () => {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2 md:flex gap-2 w-full">
               <FormField
                 control={form.control}
-                name="icon"
-                render={({ field }) => (
-                  <FormItem className="grow">
-                    <FormControl>
-                      <Input
-                        type="text"
-                        placeholder="Ex: ShoppingBagIcon"
-                        {...field}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
                 name="name"
                 render={({ field }) => (
                   <FormItem className="grow">
                     <FormControl>
                       <Input
                         type="text"
-                        placeholder="Ex: Pão, Shampoo..."
+                        placeholder="Nome"
                         {...field}
                       />
                     </FormControl>
@@ -198,7 +182,23 @@ const ItemsPage = () => {
                     <FormControl>
                       <Input
                         type="text"
-                        placeholder="Ex: 10,00"
+                        placeholder="Preço"
+                        {...field}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="icon"
+                render={({ field }) => (
+                  <FormItem className="grow">
+                    <FormControl>
+                      <Input
+                        type="text"
+                        placeholder="Ícone"
                         {...field}
                       />
                     </FormControl>

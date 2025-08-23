@@ -12,6 +12,8 @@ export const formatPrice = (value: string | number) => {
 };
 
 export const convertToReal = (value: string | number) => {
+  if (value === "" || value === null) return;
+
   const formatValue = formatPrice(value);
 
   return new Intl.NumberFormat("pt-BR", {

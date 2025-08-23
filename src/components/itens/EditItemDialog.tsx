@@ -67,29 +67,13 @@ const EditItemDialog = ({ item, update }: EditItemDialogProps) => {
             <form onSubmit={form.handleSubmit(update)} className="space-y-3">
               <FormField
                 control={form.control}
-                name="icon"
-                render={({ field }) => (
-                  <FormItem className="grow">
-                    <FormControl>
-                      <Input
-                        type="text"
-                        placeholder="Ex: ShoppingBagIcon"
-                        {...field}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
                 name="name"
                 render={({ field }) => (
                   <FormItem className="grow">
                     <FormControl>
                       <Input
                         type="text"
-                        placeholder="Ex: Pão, Shampoo..."
+                        placeholder="Nome"
                         {...field}
                       />
                     </FormControl>
@@ -105,7 +89,23 @@ const EditItemDialog = ({ item, update }: EditItemDialogProps) => {
                     <FormControl>
                       <Input
                         type="text"
-                        placeholder="Ex: 10,99"
+                        placeholder="Preço"
+                        {...field}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="icon"
+                render={({ field }) => (
+                  <FormItem className="grow">
+                    <FormControl>
+                      <Input
+                        type="text"
+                        placeholder="Ícone"
                         {...field}
                       />
                     </FormControl>
@@ -115,9 +115,9 @@ const EditItemDialog = ({ item, update }: EditItemDialogProps) => {
 
               <DialogFooter>
                 <DialogClose asChild>
-                  <Button variant="outline">Cancelar</Button>
+                  <Button variant="outline" className="cursor-pointer">Cancelar</Button>
                 </DialogClose>
-                <Button type="submit">Salvar</Button>
+                <Button type="submit" className="cursor-pointer">Salvar</Button>
               </DialogFooter>
             </form>
           </Form>

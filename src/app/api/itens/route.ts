@@ -16,24 +16,20 @@ export async function POST(request: NextRequest) {
   const body = await request.json();
   const { name, icon, price } = body;
 
-  // Verifica se existe um item com o mesmo nome
   const existing = await prisma.item.findUnique({
     where: { name },
   });
 
   if (existing) {
-    return NextResponse.json(
-      { error: "Item com esse nome já existe." },
-      { status: 409 }
-    );
+    return NextResponse.json({ error: "Item já cadastrado" }, { status: 409 });
   }
 
   try {
     const newItem = await prisma.item.create({
       data: {
-        name: name,
-        icon: icon,
-        price: price,
+        name,
+        icon,
+        price,
         status: ItemStatus.DISPONIVEL,
       },
     });
@@ -41,6 +37,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(newItem);
   } catch (error) {
     console.error("Erro ao criar item:", error);
-    return NextResponse.json({ error: "Erro ao criar item" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Não foi possível criar o item" },
+      { status: 500 }
+    );
   }
 }

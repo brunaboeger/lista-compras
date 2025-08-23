@@ -3,6 +3,7 @@ import {
   Dialog,
   DialogClose,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -31,8 +32,8 @@ interface EditItemDialogProps {
 const formSchema = z.object({
   id: z.string(),
   name: z.string(),
-  icon: z.string(),
-  price: z.string(),
+  icon: z.string().optional(),
+  price: z.string().optional(),
 });
 
 const EditItemDialog = ({ item, update }: EditItemDialogProps) => {
@@ -41,8 +42,8 @@ const EditItemDialog = ({ item, update }: EditItemDialogProps) => {
     defaultValues: {
       id: item.id,
       name: item.name,
-      icon: item.icon,
-      price: item.price,
+      icon: item.icon ?? "",
+      price: item.price ?? "",
     }
   });
 
@@ -59,6 +60,7 @@ const EditItemDialog = ({ item, update }: EditItemDialogProps) => {
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Editar item</DialogTitle>
+          <DialogDescription>Edite o item {item.name} e clique em salvar.</DialogDescription>
         </DialogHeader>
         <div>
           <Form {...form}>
@@ -103,7 +105,7 @@ const EditItemDialog = ({ item, update }: EditItemDialogProps) => {
                     <FormControl>
                       <Input
                         type="text"
-                        placeholder="Ex: 10,00"
+                        placeholder="Ex: 10,99"
                         {...field}
                       />
                     </FormControl>

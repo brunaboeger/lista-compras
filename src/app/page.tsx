@@ -12,6 +12,7 @@ type Item = {
   id: number,
   name: string,
   icon: string,
+  price: string,
 }
 
 export default function Home() {
@@ -68,14 +69,14 @@ export default function Home() {
     }
   };
 
+  const sortedRegisteredList = [...items].sort((a, b) =>
+    a.name.localeCompare(b.name)
+  );
+
   useEffect(() => {
     fetchAvailableItems();
     fetchBagItems();
   }, []);
-
-  const sortedRegisteredList = [...items].sort((a, b) =>
-    a.name.localeCompare(b.name)
-  );
 
   return (
     <>

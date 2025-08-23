@@ -26,8 +26,9 @@ interface Item {
 
 const formSchema = z.object({
   name: z.string(),
-  icon: z.string(),
-  price: z.string(),
+  id: z.string().optional(),
+  icon: z.string().optional(),
+  price: z.string().optional(),
 });
 
 const ItemsPage = () => {
@@ -52,10 +53,6 @@ const ItemsPage = () => {
     a.name.localeCompare(b.name)
   );
 
-  useEffect(() => {
-    fetchItems();
-  }, []);
-
   const capitalizeFirstLetter = (name: string) => {
     if (typeof name !== "string" || name.length === 0) {
       return name;
@@ -64,32 +61,43 @@ const ItemsPage = () => {
     return name.charAt(0).toUpperCase() + name.slice(1);
   };
 
-  const addItem = async (values: z.infer<typeof formSchema>) => {
-    const { name, icon, price } = values;
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      icon: "",
+      price: "",
+    }
+  });
+
+  const addItem = async (item: z.infer<typeof formSchema>) => {
+    const { name, icon, price } = item;
     const nameFormatted = capitalizeFirstLetter(name);
+
+    const sendToDb = {
+      name: nameFormatted,
+      icon,
+      price,
+    }
+
+    console.log("sendToDb:", sendToDb);
 
     const response = await fetch("/api/itens", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        name: nameFormatted,
-        icon,
-        price
-      }),
+      body: JSON.stringify(sendToDb),
     })
 
     const result = await response.json();
 
-    if (!response.ok) {
-      console.error("Erro ao criar item:", result.error);
-      toast.warning("Item já existe");
-      return;
+    if (response.ok) {
+      fetchItems();
+      toast.success(`Item ${name} adicionado`);
+    } else {
+      toast.warning(result.error);
     }
-
-    fetchItems();
-    toast.success(`Item ${name} adicionado`);
   }
 
   const removeItem = async ({ item }: { item: { id: string } }) => {
@@ -110,9 +118,7 @@ const ItemsPage = () => {
     }
   }
 
-  const updateItem = async (item: { id: string, name: string, icon: string, price: string }) => {
-    console.log(item);
-
+  const updateItem = async (item: z.infer<typeof formSchema>) => {
     try {
       const response = await fetch(`/api/itens/${item.id}`, {
         method: "PATCH",
@@ -142,26 +148,28 @@ const ItemsPage = () => {
     }
   }
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-      icon: "",
-      price: "",
-    }
-  });
-
   function onSubmit(values: z.infer<typeof formSchema>) {
     const { name, icon, price } = values;
 
-    const itemData = {
+    addItem({
       name,
       icon,
-      price
-    }
-
-    addItem(itemData);
+      price,
+    });
   }
+
+  const formatPrice = (value: string) => {
+    const number = typeof value === "string" ? parseFloat(value.replace(",", ".")) : value;
+
+    return new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    }).format(number || 0);
+  };
+
+  useEffect(() => {
+    fetchItems();
+  }, []);
 
   return (
     <>
@@ -169,7 +177,7 @@ const ItemsPage = () => {
         <h1 className="text-2xl font-bold mb-5">Novo item</h1>
         <div className="flex mb-1">
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="flex gap-2 w-full">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2 md:flex gap-2 w-full">
               <FormField
                 control={form.control}
                 name="icon"
@@ -219,7 +227,7 @@ const ItemsPage = () => {
               />
 
               <div>
-                <Button type="submit" className="cursor-pointer">
+                <Button type="submit" className="cursor-pointer w-full">
                   Adicionar
                 </Button>
               </div>
@@ -229,7 +237,10 @@ const ItemsPage = () => {
       </section>
 
       <section className="p-5 mt-5 bg-white rounded-2xl border max-w-[1040px] mx-auto">
-        <h2 className="text-2xl font-bold mb-5">Cadastrados ({sortedRegisteredList.length})</h2>
+        <div className="mb-5">
+          <h2 className="text-2xl font-bold">Cadastrados ({sortedRegisteredList.length})</h2>
+          <p className="text-gray-500 mt-2">Os preços foram baseados no site da Cooper.</p>
+        </div>
         {isLoading ? (
           <Loading length={15} />
         ) : sortedRegisteredList.length === 0 ? (
@@ -245,7 +256,7 @@ const ItemsPage = () => {
                     {/* {Icon && <Icon className="w-[18px]" />} */}
                     <div>
                       <p>{item.name}</p>
-                      <small className="text-gray-500">R$ {item.price}</small>
+                      <small className="text-gray-500">{formatPrice(item.price)}</small>
                     </div>
                   </div>
                   <div className="flex gap-2">

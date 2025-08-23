@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { convertToReal, capitalizeFirstLetter } from "@/lib/utils";
 
 import Loading from "./loading";
 import EmptyState from "@/components/EmptyState";
@@ -53,14 +54,6 @@ const ItemsPage = () => {
     a.name.localeCompare(b.name)
   );
 
-  const capitalizeFirstLetter = (name: string) => {
-    if (typeof name !== "string" || name.length === 0) {
-      return name;
-    }
-
-    return name.charAt(0).toUpperCase() + name.slice(1);
-  };
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -74,20 +67,16 @@ const ItemsPage = () => {
     const { name, icon, price } = item;
     const nameFormatted = capitalizeFirstLetter(name);
 
-    const sendToDb = {
-      name: nameFormatted,
-      icon,
-      price,
-    }
-
-    console.log("sendToDb:", sendToDb);
-
     const response = await fetch("/api/itens", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(sendToDb),
+      body: JSON.stringify({
+        name: nameFormatted,
+        icon,
+        price,
+      }),
     })
 
     const result = await response.json();
@@ -157,15 +146,6 @@ const ItemsPage = () => {
       price,
     });
   }
-
-  const formatPrice = (value: string) => {
-    const number = typeof value === "string" ? parseFloat(value.replace(",", ".")) : value;
-
-    return new Intl.NumberFormat("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    }).format(number || 0);
-  };
 
   useEffect(() => {
     fetchItems();
@@ -256,7 +236,7 @@ const ItemsPage = () => {
                     {/* {Icon && <Icon className="w-[18px]" />} */}
                     <div>
                       <p>{item.name}</p>
-                      <small className="text-gray-500">{formatPrice(item.price)}</small>
+                      <small className="text-gray-500">{convertToReal(item.price)}</small>
                     </div>
                   </div>
                   <div className="flex gap-2">

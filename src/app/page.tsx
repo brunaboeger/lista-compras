@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
+import { convertToReal, formatPrice } from "@/lib/utils";
 
 import EmptyState from "@/components/EmptyState";
 import Loading from "./loading";
@@ -73,6 +74,10 @@ export default function Home() {
     a.name.localeCompare(b.name)
   );
 
+  const totalPriceOfItems = bagItems.reduce((acc, item) => {
+    return acc + (formatPrice(item.price) || 0);
+  }, 0);
+
   useEffect(() => {
     fetchAvailableItems();
     fetchBagItems();
@@ -82,7 +87,10 @@ export default function Home() {
     <>
       {/* Sacola */}
       <section className="flex flex-col max-w-[1040px] mx-auto gap-4 p-5 bg-white rounded-2xl border">
-        <h1 className="text-2xl font-extrabold">Sacola ({bagItems.length})</h1>
+        <div className="flex justify-between items-end">
+          <h1 className="text-2xl font-extrabold">Sacola ({bagItems.length})</h1>
+          <p>{convertToReal(totalPriceOfItems)}</p>
+        </div>
         <div>
           {isLoading ? (
             <Loading length={3} />
@@ -99,6 +107,7 @@ export default function Home() {
                   >
                     {/* {Icon && <Icon />} */}
                     <p className="mt-1 font-medium">{item.name}</p>
+                    <small className="mt-1 text-gray-500">{convertToReal(item.price)}</small>
                   </Button>
                 )
               })}
@@ -130,6 +139,7 @@ export default function Home() {
                   >
                     {/* {Icon && <Icon />} */}
                     <p className="mt-1 font-medium">{item.name}</p>
+                    <small className="mt-1 text-gray-500">{convertToReal(item.price)}</small>
                   </Button>
                 )
               })}

@@ -1,3 +1,5 @@
+import AuthButton from "@/components/AuthButton";
+
 export default function Header() {
   const username = "Olá!";
 
@@ -9,6 +11,7 @@ export default function Header() {
             {username.charAt(0)}
           </div>
           <h3 className="font-medium">{username}</h3>
+          <AuthButton />
         </div>
       </div>
     </header>

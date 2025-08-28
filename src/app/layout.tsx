@@ -1,9 +1,7 @@
-import type { Metadata } from "next";
 import "./globals.css";
+import type { Metadata } from "next";
 import { geist } from "./fonts";
-import { Toaster } from "@/components/ui/sonner";
-import Header from "@/components/Header";
-import Toolbar from "@/components/Toolbar";
+import Content from "@/components/Content";
 
 export const metadata: Metadata = {
   title: "Mercado",
@@ -18,14 +16,9 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body className={`${geist.className} bg-gray-100`}>
-        <div className="relative main-container">
-          <Toaster position="top-center" richColors />
-          <Header />
-          <div className="content-container p-5 space-y-5">
-            {children}
-          </div>
-          <Toolbar />
-        </div>
+        <Content>
+          {children}
+        </Content>
       </body>
     </html>
   );

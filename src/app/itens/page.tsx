@@ -16,8 +16,6 @@ import Loading from "./loading";
 import EmptyState from "@/components/EmptyState";
 import EditItemDialog from "@/components/itens/EditItemDialog";
 
-// import * as LucideIcons from "lucide-react";
-
 interface Item {
   id: string,
   name: string,
@@ -228,12 +226,9 @@ const ItemsPage = () => {
         ) : (
           <ul className="grid md:grid-cols-2 gap-2">
             {sortedRegisteredList.map((item, index) => {
-              // const Icon = LucideIcons[item.icon as keyof typeof LucideIcons] as unknown as React.FC<React.SVGProps<SVGSVGElement>>;
-
               return (
                 <li key={index} className="flex items-center justify-between border p-2 rounded-md" >
                   <div className="flex gap-3 items-center ml-1">
-                    {/* {Icon && <Icon className="w-[18px]" />} */}
                     <div>
                       <p>{item.name}</p>
                       <small className="text-gray-500">{convertToReal(item.price)}</small>

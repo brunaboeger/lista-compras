@@ -7,8 +7,6 @@ import { convertToReal, formatPrice } from "@/lib/utils";
 import EmptyState from "@/components/EmptyState";
 import Loading from "./loading";
 
-// import * as LucideIcons from "lucide-react";
-
 type Item = {
   id: number,
   name: string,
@@ -97,7 +95,6 @@ export default function Home() {
           ) : bagItems.length > 0 ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
               {bagItems.map((item) => {
-                // const Icon = LucideIcons[item.icon as keyof typeof LucideIcons] as unknown as React.FC<React.SVGProps<SVGSVGElement>>;
                 return (
                   <Button
                     variant="outline"
@@ -105,7 +102,6 @@ export default function Home() {
                     className="flex flex-col p-4 gap-1 h-auto cursor-pointer"
                     onClick={() => handleItemStatus({ item }, "DISPONIVEL")}
                   >
-                    {/* {Icon && <Icon />} */}
                     <p className="mt-1 font-medium">{item.name}</p>
                     <small className="mt-1 text-gray-500">{convertToReal(item.price)}</small>
                   </Button>
@@ -129,7 +125,6 @@ export default function Home() {
           ) : sortedRegisteredList?.length > 0 ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
               {sortedRegisteredList.map((item) => {
-                // const Icon = LucideIcons[item.icon as keyof typeof LucideIcons] as unknown as React.FC<React.SVGProps<SVGSVGElement>>;
                 return (
                   <Button
                     variant="outline"
@@ -137,7 +132,6 @@ export default function Home() {
                     className="flex flex-col p-4 gap-1 h-auto cursor-pointer"
                     onClick={() => handleItemStatus({ item }, "SACOLA")}
                   >
-                    {/* {Icon && <Icon />} */}
                     <p className="mt-1 font-medium">{item.name}</p>
                     <small className="mt-1 text-gray-500">{convertToReal(item.price)}</small>
                   </Button>

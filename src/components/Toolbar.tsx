@@ -1,11 +1,15 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
 
 const Toolbar = () => {
   const path = usePathname();
+  const { data: session } = useSession();
+
+  if (!session) return;
 
   return (
     <footer className="absolute w-full bottom-0 border-t bg-white shadow-2xl p-5">

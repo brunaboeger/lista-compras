@@ -3,6 +3,8 @@
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { convertToReal, formatPrice } from "@/lib/utils";
+import { useSession } from "next-auth/react";
+import { redirect } from "next/navigation";
 
 import EmptyState from "@/components/EmptyState";
 import Loading from "./loading";
@@ -15,6 +17,10 @@ type Item = {
 }
 
 export default function Home() {
+  const { data: session } = useSession();
+
+  if (!session) redirect("/entrar");
+
   const [items, setItems] = useState<Item[]>([]);
   const [bagItems, setBagItems] = useState<Item[]>([]);
   const [isLoading, setIsLoading] = useState(true);

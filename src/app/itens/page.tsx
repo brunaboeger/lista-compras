@@ -12,6 +12,9 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { convertToReal, capitalizeFirstLetter } from "@/lib/utils";
 
+import { useSession } from "next-auth/react";
+import { redirect } from "next/navigation";
+
 import Loading from "./loading";
 import EmptyState from "@/components/EmptyState";
 import EditItemDialog from "@/components/itens/EditItemDialog";
@@ -31,6 +34,10 @@ const formSchema = z.object({
 });
 
 const ItemsPage = () => {
+  const { data: session } = useSession();
+
+  if (!session) redirect("/entrar");
+
   const [items, setItems] = useState<Item[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
